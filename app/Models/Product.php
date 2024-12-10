@@ -17,11 +17,11 @@ class product extends Model
         'image',
         'description',
         'price',
-        'is_ready'
+        'is_raady'
     ];
 
-    protected $cast = [
-        'image' => 'array'
+    protected $casts = [
+        'image' => 'array',
     ];
 
     public function category(){
