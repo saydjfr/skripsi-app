@@ -60,8 +60,9 @@ class CategoryResource extends Resource
                 ->required()
                 ->default(true)
                 ])
-                
-        ]);
+            
+            ]);
+
     }
 
     public static function table(Table $table): Table

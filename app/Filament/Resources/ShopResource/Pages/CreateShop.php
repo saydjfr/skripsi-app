@@ -9,4 +9,8 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateShop extends CreateRecord
 {
     protected static string $resource = ShopResource::class;
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
 }
