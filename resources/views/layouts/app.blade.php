@@ -29,13 +29,11 @@
             @endisset
 
             <!-- Page Content -->
-            @livewire('partials.navbar')
             <main>
                 {{ $slot }}
             </main>
             
         </div>
-        @livewire('partials.footer')
         @livewireScripts
     </body>
 </html>

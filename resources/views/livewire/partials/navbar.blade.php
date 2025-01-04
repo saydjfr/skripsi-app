@@ -1,4 +1,4 @@
-<div class="navbar bg-base-100">
+<div class="navbar bg-base-100 sticky top-0 drop-shadow-md">
   <div class="navbar-start">
     <div class="dropdown">
       <div tabindex="0" role="button" class="btn btn-ghost lg:hidden">
@@ -18,9 +18,9 @@
       <ul
         tabindex="0"
         class="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
-        <li><a>Home</a></li>
-        <li><a>Categories</a></li>
-        <li><a>Products</a></li>
+        <li><a href="/">Home</a></li>
+        <li><a href="/categories">Categories</a></li>
+        <li><a href="/products">Products</a></li>
       </ul>
     </div>
     <a class="btn btn-ghost text-xl">E-Canteen</a>
@@ -28,9 +28,9 @@
   <div class="navbar-end  ">
     {{-- menu starts --}}
     <ul class="menu menu-horizontal px-1 hidden lg:flex">
-      <li><a>Home</a></li>
-      <li><a>Categories</a></li>
-      <li><a>Products</a></li>
+      <li><a class="active" href="/">Home</a></li>
+      <li><a href="/categories">Categories</a></li>
+      <li><a href="/products">Products</a></li>
     </ul>
     {{-- menu end --}}
     {{-- chart start--}}
@@ -59,7 +59,7 @@
           <span class="text-lg font-bold">8 Items</span>
           <span class="text-info">Subtotal: $999</span>
           <div class="card-actions">
-            <button class="btn btn-primary btn-block">View cart</button>
+            <a class="btn btn-primary btn-block" href="/cart">View cart</a>
           </div>
         </div>
       </div>
