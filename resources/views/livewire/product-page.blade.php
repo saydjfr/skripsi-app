@@ -12,7 +12,7 @@
                 @foreach($categories as $category)
                 <li class="mb-4" wire:key="{{$category->id}}">
                   <label for="{{$category->slug}}" class="flex items-center dark:text-gray-400 ">
-                    <input type="checkbox" class="w-4 h-4 mr-2" id="{{$category->slug}}" value="{{$category->id}}">
+                    <input type="checkbox" wire:model.live="selected_categories" class="w-4 h-4 mr-2" id="{{$category->slug}}" value="{{$category->id}}">
                     <span class="text-lg">
                       {{$category->name}}
                     </span>
@@ -46,9 +46,9 @@
             <div class="px-3 mb-4">
               <div class="items-center justify-between hidden px-3 py-2 bg-gray-100 md:flex dark:bg-gray-900 ">
                 <div class="flex items-center justify-between">
-                  <select name="" id="" class="block w-40 text-base bg-gray-100 cursor-pointer dark:text-gray-400 dark:bg-gray-900">
-                    <option value="">Sort by latest</option>
-                    <option value="">Sort by Price</option>
+                  <select wire:model.live ="sort" class="block w-40 text-base bg-gray-100 cursor-pointer dark:text-gray-400 dark:bg-gray-900">
+                    <option value="latest">Sort by latest</option>
+                    <option value="price">Sort by Price</option>
                   </select>
                 </div>
               </div>
