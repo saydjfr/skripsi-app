@@ -1,4 +1,4 @@
-<div class=" bg-base-200 min-h-screen w-full max-w-full py-10 px-4 sm:px-6 lg:px-8 mx-auto">
+<div class=" bg-base-200 min-h-screen pt-[75px] w-full max-w-full py-10 px-4 sm:px-6 lg:px-8 mx-auto">
     <div class="container mx-auto px-4">
       <h1 class="text-2xl font-semibold mb-4">Shopping Cart</h1>
       <div class="flex flex-col md:flex-row gap-4">

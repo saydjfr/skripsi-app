@@ -24,9 +24,10 @@ static public function addItemToCart($product_id){
         $cart_item[$existing_item]['quantity']++;
         $cart_item[$existing_item]['total_amount'] = $cart_item[$existing_item]['quantity']*$cart_item[$existing_item]['unit_amount'];
     }else{
-        $product = Product::where('id', $product_id)->first('id','name','price','image');
+        $product = Product::where('id', $product_id)->first(['id','name','price','image']);
 
         if($product){
+            
             $cart_item[]= [
                 'product_id' => $product->id,
                 'name' => $product->name,

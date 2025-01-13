@@ -17,6 +17,7 @@ use Filament\Tables\Table;
 use FIlament\Forms\Components;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Spatie\Permission\Models\Role;
 
 class UserResource extends Resource
 {
@@ -55,6 +56,10 @@ class UserResource extends Resource
                     ->password()
                         ->dehydrated(fn($state)=>filled($state))
                         ->required(fn(Page $livewire):bool => $livewire instanceof CreateRecord),
+
+                        Forms\Components\Select::make('roles')
+                        ->relationship('roles', 'name')
+                        ->options(Role::all()->pluck('name', 'id')),
                
                     
                 Section::make()
@@ -74,6 +79,8 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('roles.name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('phone')
                     ->searchable(),
