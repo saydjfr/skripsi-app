@@ -8,6 +8,7 @@ use App\Models\Product;
 use Filament\Forms;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Group;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
@@ -27,6 +28,7 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 class ProductResource extends Resource
@@ -35,9 +37,27 @@ class ProductResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-squares-2x2';
 
-    protected static ?string $recordTitleAttribute = 'name';
+    protected static ?string $navigationLabel = 'Produk';
 
+    protected static ?string $recordTitleAttribute = 'name';
+    
     protected static ?int $navigationSort = 4;
+    
+    
+
+    public static function getEloquentQuery(): Builder
+    {
+        $user = Auth::user();
+
+        // dd($user);
+        // Jika user tidak memiliki shop_id, return query kosong
+        if (!$user || !$user->shop->id) {
+            return Product::query()->whereRaw('1 = 0');
+        }
+
+        // Filter data produk berdasarkan shop_id milik user login
+        return Product::query()->where('shop_id', $user->shop->id);
+    }
 
     public static function form(Form $form): Form
     {
@@ -95,11 +115,33 @@ class ProductResource extends Resource
                             ->preload()
                             ->relationship('category','name'),
 
-                            Select::make('shop_id')
+                            
+
+                            TextInput::make('shop_name')
+                            ->label('Toko')
                             ->required()
-                            ->searchable()
-                            ->preload()
-                            ->relationship('shop','name')
+                            ->disabled()
+                            ->default(function () {
+                                // Mendapatkan user yang sedang login
+                                $user = Auth::user();
+                                // dd($user, $user?->shop?->name);
+
+                                // Ambil nama toko berdasarkan relasi
+                                return $user?->shop?->name ?? 'Toko tidak ditemukan';
+                            }),
+
+                            Hidden::make('shop_id')
+                            ->default(function () {
+                                // Mendapatkan user yang sedang login
+                                $user = Auth::user();
+                                // dd($user, $user?->shop?->name);
+    
+                                // Ambil nama toko berdasarkan relasi
+                                return $user?->shop?->id ?? null;
+                            }),
+
+                   
+
                     ]),
 
                     Section::make('Status')->schema([
@@ -110,25 +152,31 @@ class ProductResource extends Resource
                 ])->columns(3);
     }
 
+
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
                 TextColumn::make('name')
+                    ->label('Nama Produk')
                     ->searchable(),
 
                 TextColumn::make('category.name')
+                    ->label('Kategori Produk')
                     ->searchable()
                     ->sortable(),
                 
                 TextColumn::make('shop.name')
+                    ->label('Toko')
                     ->searchable(),
 
                 TextColumn::make('price')
+                    ->label('Harga')
                     ->money('IDR')
                     ->sortable(),
 
                 IconColumn::make('is_raady')
+                    ->label('Status')
                     ->boolean(),
                     
                 TextColumn::make('created_at')

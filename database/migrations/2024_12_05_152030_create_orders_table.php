@@ -14,11 +14,14 @@ return new class extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
+            $table->string('nomor_pesanan')->unique();
             $table->decimal('grand_total',10,2)->nullable();
             $table->string('payment_methode')->nullable();
             $table->string('payment_status')->nullable();
             $table->enum('status',['new','processing','completed'])->default('new');
             $table->string('currency')->nullable();
+            $table->string('nama_customer');
+            $table->string('telpon');
             $table->text('notes')->nullable();
             $table->timestamps();
         });

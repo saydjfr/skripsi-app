@@ -30,6 +30,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Number;
 
 class OrderResource extends Resource
@@ -38,7 +39,23 @@ class OrderResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-shopping-bag';
 
+    protected static ?string $navigationLabel = 'Order';
+
     protected static ?int $navigationSort = 5;
+
+    // public static function getEloquentQuery(): Builder
+    // {
+    //     $user = Auth::user();
+
+    //     dd($user);
+    //     // Jika user tidak memiliki shop_id, return query kosong
+    //     if (!$user || !$user->items->id) {
+    //         return Product::query()->whereRaw('1 = 0');
+    //     }
+
+    //     // Filter data produk berdasarkan shop_id milik user login
+    //     return Product::query()->where('order_item_id', $user->items->id);
+    // }
 
     public static function form(Form $form): Form
     {
@@ -46,12 +63,20 @@ class OrderResource extends Resource
             ->schema([
                 Group::make()->schema([
                     Section::make('Order Information')->schema([
-                        Select::make('user_id')
-                            ->label('Costumer')
-                            ->relationship('user','name')
-                            ->searchable()
-                            ->preload()
+                        TextInput::make('nomor_pesanan')
+                            ->label('Nomor Pesanan')
+                            ->disabled()
+                            ->default(fn()=> 'ORD-'.random_int(10000,999999))
+                            ->dehydrated()
                             ->required(),
+                        
+
+                        // Select::make('user_id')
+                        //     ->label('Costumer')
+                        //     ->relationship('user','name')
+                        //     ->searchable()
+                        //     ->preload()
+                        //     ->required(),
                         
                         Select::make('payment_methode')
                             ->options([
@@ -168,8 +193,8 @@ class OrderResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('user.name')
-                    ->label('Customer')
+                TextColumn::make('nomor_pesanan')
+                    ->label('Nomor Pemesanan')
                     ->sortable()
                     ->searchable(),
 

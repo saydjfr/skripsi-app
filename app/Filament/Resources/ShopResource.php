@@ -39,9 +39,13 @@ class ShopResource extends Resource
                         Forms\Components\TextInput::make('name')
                             ->required()
                             ->maxLength(255),
-                        Forms\Components\Textarea::make('description')
+                        Forms\Components\Select::make('user_id')
+                            ->label('Nama Pemilik')
+                            ->relationship('user', 'name')
                             ->required(),
                     ]),
+                    Forms\Components\Textarea::make('description')
+                            ->required(),
                     Forms\Components\FileUpload::make('image')
                             ->image()
                             ->directory('shops'),
@@ -56,6 +60,10 @@ class ShopResource extends Resource
                 Tables\Columns\ImageColumn::make('image'),
 
                 Tables\Columns\TextColumn::make('name')
+                    ->searchable(),
+                
+                Tables\Columns\TextColumn::make('user.name')
+                    ->label('Nama Pemilik')
                     ->searchable(),
 
                 Tables\Columns\TextColumn::make('created_at')

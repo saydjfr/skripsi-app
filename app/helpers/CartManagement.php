@@ -42,6 +42,42 @@ static public function addItemToCart($product_id){
     return $cart_item;
 }
 
+//add item to cart with Qty
+static public function addItemToCartWithQty($product_id, $Qty =1){
+    $cart_item = self::getCartItemFromCookie();
+
+    $existing_item = null;
+
+    foreach($cart_item as $key => $item){
+        if($item['product_id']== $product_id){
+            $existing_item = $key;
+
+            break;
+        }
+    }
+
+    if($existing_item !== null){
+        $cart_item[$existing_item]['quantity'] =$Qty;
+        $cart_item[$existing_item]['total_amount'] = $cart_item[$existing_item]['quantity']*$cart_item[$existing_item]['unit_amount'];
+    }else{
+        $product = Product::where('id', $product_id)->first(['id','name','price','image']);
+
+        if($product){
+            
+            $cart_item[]= [
+                'product_id' => $product->id,
+                'name' => $product->name,
+                'img'=>$product->image[0],
+                'quantity' => $Qty,
+                'unit_amount'=> $product->price,
+                'total_amount'=> $product->price
+            ];
+        }
+    }
+    self::addCartItemToCookie($cart_item);
+    return $cart_item;
+}
+
 // remove item from cart
 static public function removeItemFromCart($product_id){
     $cart_item = self::getCartItemFromCookie();

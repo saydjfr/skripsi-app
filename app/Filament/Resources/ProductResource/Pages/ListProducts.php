@@ -10,6 +10,8 @@ class ListProducts extends ListRecords
 {
     protected static string $resource = ProductResource::class;
 
+    protected ?string $heading = 'Produk';
+
     protected function getHeaderActions(): array
     {
         return [

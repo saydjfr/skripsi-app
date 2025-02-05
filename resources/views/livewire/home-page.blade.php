@@ -1,74 +1,53 @@
-<div class="z-0">
-  {{-- hero section start --}}
-  <div
-  class="hero min-h-screen"
-  style="background-image: url(https://img.daisyui.com/images/stock/photo-1507358522600-9f71e620c44e.webp);">
-  <div class="hero-overlay bg-opacity-80"></div>
-  <div class="hero-content text-neutral-content text-center">
-    <div class="max-w-md">
-      <h1 class=" static mb-5 text-5xl font-bold">E-canteen</h1>
-      <p class=" static mb-5">
-        Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda excepturi exercitationem
-        quasi. In deleniti eaque aut repudiandae et a id nisi.
-      </p>
-      <a href="{{route('login')}}" class="btn btn-primary" wire:navigate>Get Started</a>
+<div class="home-container bg-gradient-to-b from-blue-50 to-blue-100 min-h-screen flex flex-col items-center justify-center">
+  <!-- Hero Section -->
+  <div class="hero-section text-center py-20 px-6 bg-white shadow-xl rounded-3xl w-full max-w-6xl mt-6">
+    <h1 class="hero-title text-5xl font-extrabold text-gray-800 mb-6">Selamat Datang di <span class="text-blue-500">E-Kantin</span></h1>
+    <p class="hero-subtitle text-lg text-center italic text-gray-600 mb-8">
+     <b> E-Kantin</b> adalah solusi modern yang mengubah cara Anda berbelanja di kantin. Dengan platform kami, Anda dapat memesan makanan dan minuman favorit dengan mudah, cepat, dan tanpa antre. Nikmati pengalaman belanja yang nyaman dengan antarmuka yang ramah pengguna, transaksi yang aman, dan pelayanan terpercaya. E-Kantin hadir untuk memenuhi kebutuhan Anda dengan teknologi terkini, memberikan Anda lebih banyak waktu untuk fokus pada hal-hal penting lainnya.
+
+Apakah Anda siap untuk merasakan kemudahan dan kecepatan yang ditawarkan oleh E-Kantin? Bergabunglah sekarang dan rasakan pengalaman belanja yang benar-benar berbeda!
+    </p>
+    <a href="/products" class=" btn hero-button bg-blue-500 text-white font-semibold py-3 px-8 rounded-lg shadow-lg hover:bg-blue-600 transition duration-300">Mulai Belanja</a>
+    <div class="hero-image w-full mt-10">
+      <img src="{{asset('image/HeroIcon.jpg')}}" alt="E-Kantin Hero" class="mx-auto w-full max-w-xl rounded-xl shadow-md">
     </div>
   </div>
-</div>
-  {{-- hero section end --}}
-  {{-- brand section start --}}
-  <div class="bg-orange-200 py-20">
-    <div class="max-w-xl mx-auto">
-      <div class="text-center ">
-        <div class="relative flex flex-col items-center">
-          <h1 class="text-5xl font-bold dark:text-gray-200"> Ada <span class="text-blue-500"> Apa Aja ?
-            </span> </h1>
-          <div class="flex w-40 mt-2 mb-6 overflow-hidden rounded">
-            <div class="flex-1 h-2 bg-blue-200">
-            </div>
-            <div class="flex-1 h-2 bg-blue-400">
-            </div>
-            <div class="flex-1 h-2 bg-blue-600">
-            </div>
-          </div>
+
+  <!-- Features Section -->
+  <div class="features-section text-center mt-16 px-6 w-full max-w-7xl mb-10">
+    <h2 class="section-title text-3xl font-bold text-gray-800 mb-10">Mengapa Memilih <span class="text-blue-500">E-Kantin?</span></h2>
+    <div class="features-list grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div class="feature-item bg-white shadow-lg rounded-2xl p-8 transform hover:scale-105 transition duration-300">
+        <div class="feature-icon mb-6">
+          <img src="{{asset('image/quick-response.png')}}" alt="Cepat" class="w-16 h-16 mx-auto">
         </div>
-        <p class="mb-12 text-base text-center text-gray-500">
-          Lorem ipsum, dolor sit amet consectetur adipisicing elit. Delectus magni eius eaque?
-          Pariatur
-          numquam, odio quod nobis ipsum ex cupiditate?
-        </p>
+        <h3 class="feature-title text-xl font-bold text-gray-800 mb-4">Cepat</h3>
+        <p class="feature-description text-gray-600">Pesan makanan dan minuman hanya dengan beberapa klik. Tidak perlu antre!</p>
+      </div>
+      <div class="feature-item bg-white shadow-lg rounded-2xl p-8 transform hover:scale-105 transition duration-300">
+        <div class="feature-icon mb-6">
+          <img src="{{asset('image/cargo.png')}}" alt="Mudah" class="w-16 h-16 mx-auto">
+        </div>
+        <h3 class="feature-title text-xl font-bold text-gray-800 mb-4">Mudah</h3>
+        <p class="feature-description text-gray-600">Antarmuka yang ramah pengguna untuk kemudahan Anda. Semua bisa diakses dengan mudah.</p>
+      </div>
+      <div class="feature-item bg-white shadow-lg rounded-2xl p-8 transform hover:scale-105 transition duration-300">
+        <div class="feature-icon mb-6">
+          <img src="{{asset('image/badge.png')}}" alt="Aman" class="w-16 h-16 mx-auto">
+        </div>
+        <h3 class="feature-title text-xl font-bold text-gray-800 mb-4">Aman</h3>
+        <p class="feature-description text-gray-600">Transaksi aman dan terpercaya. Data Anda dijamin kerahasiaannya.</p>
       </div>
     </div>
-  
-    <div class="max-w-full px-4 sm:px-6 lg:px-8 mx-auto ">
-      <div class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6">
-        
-        @foreach ($categories as $category)
-        <a class="group flex flex-col bg-white border shadow-sm rounded-xl hover:shadow-md transition dark:bg-slate-900 dark:border-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600" href="/products?selected_categories[0]={{$category->id}}" wire:key="{{$category->id}}">
-          <div class="p-4 md:p-5">
-            <div class="flex justify-between items-center">
-              <div class="flex items-center">
-                <img class="h-[2.375rem] w-[2.375rem] rounded-full" src="{{url('storage', $category->image)}}" alt="{{$category->name}}">
-                <div class="ms-3">
-                  <h3 class="group-hover:text-blue-600 font-semibold text-gray-800 dark:group-hover:text-gray-400 dark:text-gray-200">
-                    {{$category->name}}
-                  </h3>
-                </div>
-              </div>
-              <div class="ps-3">
-                <svg class="flex-shrink-0 w-5 h-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="m9 18 6-6-6-6" />
-                </svg>
-              </div>
-            </div>
-          </div>
-        </a>  
-        @endforeach
-        
-      </div>
-    </div>
-  
   </div>
-  {{-- brand section end --}}
+
+  <!-- Call to Action Section -->
+  @guest
+  <div class="cta-section text-center mt-16 bg-blue-500 text-white py-12 px-6 rounded-3xl w-full max-w-5xl shadow-xl mb-10">
+    <h2 class="cta-title text-3xl font-bold mb-6">Siap Mencoba <span class="text-yellow-300">E-Kantin?</span></h2>
+    <p class="cta-description text-lg mb-8">Daftar sekarang dan nikmati kemudahan layanan kami. Rasakan pengalaman belanja yang berbeda.</p>
+    <a href="/register" class="cta-button bg-yellow-300 text-blue-800 font-semibold py-3 px-8 rounded-lg shadow-lg hover:bg-yellow-400 transition duration-300">Daftar Sekarang</a>
+  </div>
+  @endguest
 
 </div>
