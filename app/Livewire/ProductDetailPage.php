@@ -15,42 +15,47 @@ class ProductDetailPage extends Component
     use LivewireAlert;
 
     public $slug;
-    public $quantity=1;
+    public $quantity = 1;
 
 
-    public function mount($slug){
+    public function mount($slug)
+    {
         $this->slug = $slug;
-      
     }
 
-    public function increaseQuantity(){
-       $this->quantity++;
+    public function increaseQuantity()
+    {
+        $this->quantity++;
     }
 
-    public function kurangQty(){
-       if ($this->quantity > 1) {
-        $this->quantity--;
-       }
+    public function kurangQty()
+    {
+        if ($this->quantity > 1) {
+            $this->quantity--;
+        }
     }
 
-     // add to cart method
-     public function addToCart($product_id){
-        $total_count = CartManagement::addItemToCartWithQty($product_id,$this->quantity);
-        
-        $this->dispatch('update-cart-count', total_count : count($total_count))->to(Navbar::class);
+    // add to cart method
+    public function addToCart($product_id)
+    {
+        $total_count = CartManagement::addItemToCartWithQty($product_id, $this->quantity);
 
-        $this->alert('success', 'Produk Berhasil Ditambahkan ke Keranjang',[
+        $this->dispatch('update-cart-count', total_count: count($total_count))->to(Navbar::class);
+
+        $this->alert('success', 'Produk Berhasil Ditambahkan ke Keranjang', [
             'position' => 'center start',
             'timer' => 3000,
-            'toast'=> true,
+            'toast' => true,
         ]);
     }
 
     public function render()
     {
-        return view('livewire.product-detail-page',
-    [
-        'product' => Product::where('slug', $this->slug)->firstorFail(),
-    ]);
+        return view(
+            'livewire.product-detail-page',
+            [
+                'product' => Product::where('slug', $this->slug)->firstorFail(),
+            ]
+        );
     }
 }

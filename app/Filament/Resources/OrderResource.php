@@ -43,33 +43,57 @@ class OrderResource extends Resource
 
     protected static ?int $navigationSort = 5;
 
-    // public static function getEloquentQuery(): Builder
-    // {
-    //     $user = Auth::user();
+    public static function getEloquentQuery(): Builder
+    {
+        $user = Auth::user()->load('shop');
 
-    //     dd($user);
-    //     // Jika user tidak memiliki shop_id, return query kosong
-    //     if (!$user || !$user->items->id) {
-    //         return Product::query()->whereRaw('1 = 0');
-    //     }
+        if ($user->hasRole('super_admin')) {
+            return Order::query()->with('user.addres');
+        }
 
-    //     // Filter data produk berdasarkan shop_id milik user login
-    //     return Product::query()->where('order_item_id', $user->items->id);
-    // }
+        // dd($user);
+        // Jika user tidak memiliki shop_id, return query kosong
+        if (!$user || !$user->shop->id) {
+            return Order::query()->whereRaw('1 = 0');
+        }
+
+        // Filter data order berdasarkan shop_id milik user login
+        return Order::query()->with('items.product')->whereHas('items', function ($query) use ($user) {
+            $query->whereHas('product', function ($query) use ($user) {
+                $query->where('shop_id', $user->shop->id);
+            });
+        });
+    }
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Group::make()->schema([
+
+                    Section::make('Informasi Pelanggan')->schema([
+                        TextInput::make('nama_customer')
+                            ->label('Nama Pemesan'),
+                        TextInput::make('telpon')
+                            ->label('Nomor Hp/Wa'),
+
+                        Textarea::make('alamat')
+                            ->label('Alamat')
+                            ->columnSpanFull()
+                            ->disabled()
+                            ->afterStateHydrated(function ($set, $record) {
+                                $set('alamat', $record->user?->addres?->alamat ?? 'Alamat tidak tersedia');
+                            }),
+                    ])->columns(2),
+
                     Section::make('Order Information')->schema([
                         TextInput::make('nomor_pesanan')
                             ->label('Nomor Pesanan')
                             ->disabled()
-                            ->default(fn()=> 'ORD-'.random_int(10000,999999))
+                            ->default(fn() => 'ORD-' . random_int(10000, 999999))
                             ->dehydrated()
                             ->required(),
-                        
+
 
                         // Select::make('user_id')
                         //     ->label('Costumer')
@@ -77,7 +101,7 @@ class OrderResource extends Resource
                         //     ->searchable()
                         //     ->preload()
                         //     ->required(),
-                        
+
                         Select::make('payment_methode')
                             ->options([
                                 'stripe' => 'Stripe',
@@ -87,13 +111,13 @@ class OrderResource extends Resource
 
                         Select::make('payment_status')
                             ->options([
-                                    'pending' => 'Pending',
-                                    'paid' => 'Paid',
-                                    'failed' => 'Failed'
-                                ])
+                                'pending' => 'Pending',
+                                'paid' => 'Paid',
+                                'failed' => 'Failed'
+                            ])
                             ->default('pending')
                             ->required(),
-                        
+
                         ToggleButtons::make('status')
                             ->inline()
                             ->default('new')
@@ -101,7 +125,8 @@ class OrderResource extends Resource
                             ->options([
                                 'new' => 'New',
                                 'processing' => 'Processing',
-                                'completed' => 'Completed'
+                                'completed' => 'Completed',
+                                'failed' => 'failed'
                             ])
                             ->colors([
                                 'new' => 'info',
@@ -114,72 +139,64 @@ class OrderResource extends Resource
                                 'completed' => 'heroicon-m-check-circle'
                             ]),
 
-                        Select::make('currency')
-                            ->options([
-                                'idr' => 'IDR',
-                                'usd' => 'USD',
-                                'eur' => 'EUR'
-                            ])
-                            ->default('idr')
-                            ->required(),
-
                         Textarea::make('notes')
-                        ->columnSpanFull(),
+                            ->label('Catatan')
+                            ->columnSpanFull(),
                     ])->columns(2),
 
                     Section::make('Order Item')->schema([
                         Repeater::make('items')
-                        ->relationship()
-                        ->schema([
+                            ->relationship()
+                            ->schema([
 
-                            Select::make('product_id')
-                                ->relationship('product', 'name')
-                                ->searchable()
-                                ->preload()
-                                ->required()
-                                ->distinct()
-                                ->disableOptionsWhenSelectedInSiblingRepeaterItems()
-                                ->columnSpan(4)
-                                ->reactive()
-                                ->afterStateUpdated(fn($state, Set $set)=>$set('unit_amount', Product::find($state)?->price ?? 0))
-                                ->afterStateUpdated(fn($state, Set $set)=>$set('total_amount', Product::find($state)?->price ?? 0)),
-                
+                                Select::make('product_id')
+                                    ->relationship('product', 'name')
+                                    ->searchable()
+                                    ->preload()
+                                    ->required()
+                                    ->distinct()
+                                    ->disableOptionsWhenSelectedInSiblingRepeaterItems()
+                                    ->columnSpan(4)
+                                    ->reactive()
+                                    ->afterStateUpdated(fn($state, Set $set) => $set('unit_amount', Product::find($state)?->price ?? 0))
+                                    ->afterStateUpdated(fn($state, Set $set) => $set('total_amount', Product::find($state)?->price ?? 0)),
 
-                            TextInput::make('quantity')
-                                ->numeric()
-                                ->required()
-                                ->default(1)
-                                ->minValue(1)
-                                ->columnSpan(2)
-                                ->reactive()
-                                ->afterStateUpdated(fn($state, Set $set, Get $get)=>$set('total_amount', $state*$get('unit_amount'))),
 
-                            TextInput::make('unit_amount')
-                                ->numeric()
-                                ->required()
-                                ->disabled()
-                                ->dehydrated()
-                                ->columnSpan(3),
+                                TextInput::make('quantity')
+                                    ->numeric()
+                                    ->required()
+                                    ->default(1)
+                                    ->minValue(1)
+                                    ->columnSpan(2)
+                                    ->reactive()
+                                    ->afterStateUpdated(fn($state, Set $set, Get $get) => $set('total_amount', $state * $get('unit_amount'))),
 
-                            TextInput::make('total_amount')
-                                ->numeric()
-                                ->required()
-                                ->dehydrated()
-                                ->columnSpan(3)
-                        ])->columns(12),
+                                TextInput::make('unit_amount')
+                                    ->numeric()
+                                    ->required()
+                                    ->disabled()
+                                    ->dehydrated()
+                                    ->columnSpan(3),
+
+                                TextInput::make('total_amount')
+                                    ->numeric()
+                                    ->required()
+                                    ->dehydrated()
+                                    ->columnSpan(3)
+                            ])->columns(12),
 
                         Placeholder::make('grand_total_placeholder')
                             ->label('Grand Total')
-                            ->content(function(Get $get, Set $set){
+                            ->content(function (Get $get, Set $set) {
                                 $total = 0;
-                                if(!$reapeaters = $get('items')){
+                                if (!$reapeaters = $get('items')) {
                                     return $total;
                                 }
                                 foreach ($reapeaters as $key => $reapeater) {
                                     $total += $get("items.{$key}.total_amount");
                                 }
-                                $set('grand_total',$total);
-                                return Number::currency($total,'IDR');
+                                $set('grand_total', $total);
+                                return Number::currency($total, 'IDR');
                             }),
 
                         Hidden::make('grand_total')
@@ -198,6 +215,11 @@ class OrderResource extends Resource
                     ->sortable()
                     ->searchable(),
 
+                TextColumn::make('nama_customer')
+                    ->label('Nama Pemesan')
+                    ->sortable()
+                    ->searchable(),
+
                 TextColumn::make('grand_total')
                     ->sortable()
                     ->numeric()
@@ -206,12 +228,8 @@ class OrderResource extends Resource
                 TextColumn::make('payment_methode')
                     ->sortable()
                     ->searchable(),
-                
+
                 TextColumn::make('payment_status')
-                    ->sortable()
-                    ->searchable(),
-                
-                TextColumn::make('currency')
                     ->sortable()
                     ->searchable(),
 
@@ -219,7 +237,8 @@ class OrderResource extends Resource
                     ->options([
                         'new' => 'New',
                         'processing' => 'Processing',
-                        'completed' => 'Completed'
+                        'completed' => 'Completed',
+                        'failed' => 'failed'
                     ])
                     ->sortable()
                     ->searchable(),
@@ -227,12 +246,12 @@ class OrderResource extends Resource
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault:true),
-                        
+                    ->toggleable(isToggledHiddenByDefault: true),
+
                 TextColumn::make('upadated_at')
                     ->dateTime()
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault:true),
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 //
@@ -261,7 +280,23 @@ class OrderResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return static::getModel()::count();
+
+        $user = Auth::user();
+
+        // jika role user admin maka tampilkan semua hitungan order
+        if ($user->hasRole('super_admin')) {
+            return Order::count();
+        }
+
+        if ($user->shop->id) {
+            return Order::whereHas('items', function ($query) use ($user) {
+                $query->whereHas('product', function ($query) use ($user) {
+                    $query->where('shop_id', $user->shop->id);
+                });
+            })->count();
+        }
+
+        return '0';
     }
 
     public static function getNavigationBadgeColor(): string|array|null

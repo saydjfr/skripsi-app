@@ -22,11 +22,13 @@ class Order extends Model
         'telpon',
     ];
 
-    public function user(){
+    public function user()
+    {
         return $this->belongsTo(User::class);
     }
 
-    public function items(){
+    public function items()
+    {
         return $this->hasMany(Order_item::class);
     }
 }

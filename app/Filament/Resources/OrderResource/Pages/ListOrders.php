@@ -17,23 +17,23 @@ class ListOrders extends ListRecords
 {
     protected static string $resource = OrderResource::class;
 
-        protected function getTableQuery(): ?Builder
-        {
-            if(Auth::user()->hasRole('seller')){
-                // dd( Auth::user()->shop->id);
-                return Order::with('items.product')
-                ->whereHas('items', function($query){
-                    
-                    $query->whereHas('product', function($query){
-                     $query->where('shop_id', Auth::user()->shop->id);
-                    });
-                 }); 
-            }
+    // protected function getTableQuery(): ?Builder
+    // {
+    //     if(Auth::user()->hasRole('seller')){
+    //         // dd( Auth::user()->shop->id);
+    //         return Order::with('items.product')
+    //         ->whereHas('items', function($query){
 
-            return Order::latest();
+    //             $query->whereHas('product', function($query){
+    //              $query->where('shop_id', Auth::user()->shop->id);
+    //             });
+    //          }); 
+    //     }
 
-        
-        }
+    //     return Order::latest();
+
+
+    // }
 
     protected function getHeaderActions(): array
     {
@@ -44,18 +44,18 @@ class ListOrders extends ListRecords
 
     protected function getHeaderWidgets(): array
     {
-        return[
-            OrderStats::class
+        return [
+            // OrderStats::class
         ];
     }
 
     public function getTabs(): array
     {
-        return[
-            null=> Tab::make('All'),
-            'New'=>Tab::make()->query(fn($query)=>$query->where('status','new')),
-            'Processing'=>Tab::make()->query(fn($query)=>$query->where('status','processing')),
-            'Completed'=>Tab::make()->query(fn($query)=>$query->where('status','completed'))
+        return [
+            null => Tab::make('All'),
+            'New' => Tab::make()->query(fn($query) => $query->where('status', 'new')),
+            'Processing' => Tab::make()->query(fn($query) => $query->where('status', 'processing')),
+            'Completed' => Tab::make()->query(fn($query) => $query->where('status', 'completed'))
         ];
     }
 }

@@ -49,9 +49,11 @@ class ProductResource extends Resource
     {
         $user = Auth::user();
 
+            // dd(Product::query()->whereRaw('1 = 0'));
         // dd($user);
         // Jika user tidak memiliki shop_id, return query kosong
         if (!$user || !$user->shop->id) {
+            // dd(Product::query()->whereRaw('1 = 0'));
             return Product::query()->whereRaw('1 = 0');
         }
 

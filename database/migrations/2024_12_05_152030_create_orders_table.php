@@ -15,10 +15,10 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->string('nomor_pesanan')->unique();
-            $table->decimal('grand_total',10,2)->nullable();
+            $table->decimal('grand_total', 10, 2)->nullable();
             $table->string('payment_methode')->nullable();
             $table->string('payment_status')->nullable();
-            $table->enum('status',['new','processing','completed'])->default('new');
+            $table->enum('status', ['new', 'processing', 'completed'])->default('new');
             $table->string('currency')->nullable();
             $table->string('nama_customer');
             $table->string('telpon');

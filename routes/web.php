@@ -1,6 +1,9 @@
 <?php
 
+use App\Http\Controllers\MidtransController;
 use App\Http\Controllers\ProfileController;
+use App\Livewire\AddAddres;
+use App\Livewire\Addres;
 use App\Livewire\Auth\ForgotPassword;
 use App\Livewire\Auth\ForgotPasswordPage;
 use App\Livewire\Auth\Login;
@@ -16,6 +19,7 @@ use App\Livewire\CheckoutPage;
 use App\Livewire\HomePage;
 use App\Livewire\MyOrderDetailPage;
 use App\Livewire\MyOrderPage;
+use App\Livewire\PagePaymentSuccess;
 use App\Livewire\ProductDetailPage;
 use App\Livewire\ProductPage;
 use App\Livewire\StatusPesanan;
@@ -28,34 +32,36 @@ Route::get('/', HomePage::class)->name('home');
 Route::get('/categories', CategoriesPage::class);
 Route::get('/products', ProductPage::class);
 Route::get('/cart', CartPage::class);
-Route::get('/products/{slug}',ProductDetailPage::class );
+Route::get('/products/{slug}', ProductDetailPage::class);
 
 
 
 
 
-Route::middleware('guest')->group(function(){
+Route::middleware('guest')->group(function () {
     Route::get('/login', LoginPage::class)->name('login');
     Route::get('/register', RegisterPage::class);
     Route::get('/resetpassword/{token}', ResetPasswordPage::class)->name('password.reset');
     Route::get('/forgotpassword', ForgotPasswordPage::class)->name('password.request');
 });
 
-Route::middleware('auth')->group(function(){
-    Route::get('/logout', function(){
+Route::middleware('auth')->group(function () {
+    Route::get('/logout', function () {
         auth()->logout();
         return redirect('/');
     });
     Route::get('/checkout', CheckoutPage::class);
-    Route::get('/checkorder',CheckOrder::class);
+    Route::get('/checkorder', CheckOrder::class);
     Route::get('/status/{nomor_pesanan}', StatusPesanan::class)->name('status');
     Route::get('/succes', SuccesPage::class);
     Route::get('/cancel', CancelPage::class);
-    Route::get('/myorders',MyOrderPage::class);
+    Route::get('/myorders', MyOrderPage::class);
     Route::get('/myorders/{order}', MyOrderDetailPage::class);
-
+    Route::get('/addres', Addres::class);
+    Route::get('/tambahaddres', AddAddres::class);
 });
 
+Route::get("/payment-hook", [MidtransController::class, "payment_hook"]);
 
 // Route::get('/dashboard', function () {
 //     return view('dashboard');
@@ -67,4 +73,4 @@ Route::middleware('auth')->group(function(){
 //     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 // });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

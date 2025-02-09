@@ -33,42 +33,38 @@ class UserResource extends Resource
     {
         return $form
             ->schema([
-                    Forms\Components\TextInput::make('name')
+                Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255),
-                    
-                    Forms\Components\TextInput::make('email')
+
+                Forms\Components\TextInput::make('email')
                     ->label('Email Address')
                     ->email()
                     ->maxLength(255)
-                    ->unique(ignoreRecord:true)
+                    ->unique(ignoreRecord: true)
                     ->required(),
-                    
-                    Forms\Components\TextInput::make('phone')
-                    ->tel()
-                    ->maxLength(255),
-                    
-                    Forms\Components\DateTimePicker::make('email_verified_at')
+
+
+                Forms\Components\DateTimePicker::make('email_verified_at')
                     ->label('Email Verified At')
                     ->default(now()),
-                    
-                    Forms\Components\TextInput::make('password')
-                    ->password()
-                        ->dehydrated(fn($state)=>filled($state))
-                        ->required(fn(Page $livewire):bool => $livewire instanceof CreateRecord),
 
-                        Forms\Components\Select::make('roles')
-                        ->relationship('roles', 'name')
-                        ->options(Role::all()->pluck('name', 'id')),
-               
-                    
+                Forms\Components\TextInput::make('password')
+                    ->password()
+                    ->dehydrated(fn($state) => filled($state))
+                    ->required(fn(Page $livewire): bool => $livewire instanceof CreateRecord),
+
+                Forms\Components\Select::make('roles')
+                    ->relationship('roles', 'name')
+                    ->options(Role::all()->pluck('name', 'id')),
+
+
                 Section::make()
-                ->schema([
-                    Forms\Components\FileUpload::make('image')
-                    ->image(),
-                ])
+                    ->schema([
+                        Forms\Components\FileUpload::make('image')
+                            ->image(),
+                    ])
             ]);
-            
     }
 
     public static function table(Table $table): Table
@@ -81,8 +77,6 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('email')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('roles.name')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('phone')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email_verified_at')
                     ->dateTime()

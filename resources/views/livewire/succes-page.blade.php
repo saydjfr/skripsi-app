@@ -44,7 +44,10 @@
             </thead>
             @foreach ($listPesanan as $lP)
             <tbody >
-              <td class="py-2">
+              <p>
+                {{-- {{$lP}} --}}
+              </p>
+              {{-- <td class="py-2">
                 <p class="text-base font-semibold leading-4 text-gray-800 dark:text-gray-400">
                   {{$lP['nomor_pesanan']}}
                  </p>
@@ -80,7 +83,7 @@
               @php
                 // $totalHarga+=$lP['grand_total'];
 
-              @endphp
+              @endphp --}}
             </tbody>
             @endforeach
           </table>
